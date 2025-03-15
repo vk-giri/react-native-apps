@@ -1,20 +1,35 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+
+import StartGameScreen from './screens/StartGameScreen';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <LinearGradient colors={['#4e0329', '#ddb52f']} style={styles.rootScreen}>
+        <StatusBar style='auto' />
+        <ImageBackground
+          source={require('./assets/images/background.png')}
+          resizeMethod='cover'
+          style={styles.rootScreen} // this is attached to the View inside of ImageBackGround
+          imageStyle={styles.backgroundImage} // this is attached to the actual image of the component
+        >
+          <StartGameScreen />
+        </ImageBackground>
+      </LinearGradient>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  rootScreen: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+
+  backgroundImage: {
+    opacity: 0.15,
   },
 });
+
+// View only take up as much space as its children
