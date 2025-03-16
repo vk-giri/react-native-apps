@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ImageBackground, SafeAreaView, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useFonts } from 'expo-font';
 
 import StartGameScreen from './screens/StartGameScreen';
 import GameScreen from './screens/GameScreen';
@@ -11,13 +12,26 @@ import GameOver from './screens/GameOver';
 export default function App() {
   const [userNumber, setUserNumber] = useState(null);
   const [gameOver, setGameOver] = useState(false);
+  const [rounds, setRounds] = useState(0);
+
+  const [fontsLoaded] = useFonts({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+  });
 
   function pickedNumberHandler(pickedNumber) {
     setUserNumber(pickedNumber);
+    setGameOver(false);
   }
 
-  function gameOverHandler() {
-    setGameOver(true)
+  function gameOverHandler(numRounds) {
+    setRounds(numRounds);
+    setGameOver(true);
+  }
+
+  function startNewGameHandler() {
+    setUserNumber(null);
+    setRounds(0);
   }
 
   return (
@@ -36,7 +50,7 @@ export default function App() {
             ) : !gameOver ? (
               <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
             ) : (
-              <GameOver />
+              <GameOver userNumber={userNumber} rounds={rounds} onStartNewGame={startNewGameHandler} />
             )}
           </SafeAreaView>
         </ImageBackground>
