@@ -1,18 +1,50 @@
-import { StyleSheet, TextInput, View } from 'react-native';
-import React from 'react';
+import { Alert, StyleSheet, TextInput, View } from 'react-native';
+import React, { useState } from 'react';
 
-import PrimaryButton from '../components/PrimaryButton';
+import PrimaryButton from '../components/UI/PrimaryButton.js';
+import Colors from '../constants/Colors.js';
 
-const StartGameScreen = () => {
+const StartGameScreen = ({ onConfirmNumber }) => {
+  const [enteredNumber, setEnteredNumber] = useState('');
+
+  function numberInputHandler(enteredText) {
+    setEnteredNumber(enteredText);
+  }
+
+  function resetInputHandler() {
+    setEnteredNumber('');
+  }
+
+  function confirmInputHandler() {
+    const chosenNumber = parseInt(enteredNumber);
+
+    if (isNaN(chosenNumber) || chosenNumber < 1 || chosenNumber > 99) {
+      Alert.alert('Invalid Number', 'Number has to be between 1 and 99.', [
+        { text: 'Okay', style: 'destructive', onPress: resetInputHandler },
+      ]);
+      return;
+    }
+
+    onConfirmNumber(chosenNumber);
+  }
+
   return (
     <View style={styles.inputContainer}>
-      <TextInput style={styles.numberInput} maxLength={2} keyboardType='number-pad' autoCorrect={false} />
+      <TextInput
+        style={styles.numberInput}
+        maxLength={2}
+        keyboardType='number-pad'
+        autoCorrect={false}
+        value={enteredNumber}
+        onChangeText={numberInputHandler}
+      />
+
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Reset</PrimaryButton>
+          <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
         </View>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Confirm</PrimaryButton>
+          <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
         </View>
       </View>
     </View>
@@ -28,7 +60,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 100,
     marginHorizontal: 24,
-    backgroundColor: '#3b021f',
+    backgroundColor: Colors.primary800,
     borderRadius: 8,
     elevation: 8, // this doesn't work
     zIndex: 2,
@@ -52,9 +84,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     fontSize: 32,
     width: 50,
-    borderBottomColor: '#ddb52f',
+    borderBottomColor: Colors.accent500,
     borderBottomWidth: 2,
-    color: '#ddb52f',
+    color: Colors.accent500,
     fontWeight: 'bold',
     textAlign: 'center',
   },
