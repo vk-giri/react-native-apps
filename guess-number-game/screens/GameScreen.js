@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, StatusBar, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import Title from '../components/UI/Title';
@@ -21,6 +21,8 @@ let maxBoundary = 100;
 const GameScreen = ({ userNumber, onGameOver }) => {
   const [currentGuess, setCurrentGuess] = useState(generateRandom(minBoundary, maxBoundary));
   const [pastGuess, setPastGuess] = useState([currentGuess]);
+
+  const { width, height } = useWindowDimensions();
 
   function nextGuessHandler(direction) {
     // the current guess is lower than the number user choose
@@ -57,9 +59,8 @@ const GameScreen = ({ userNumber, onGameOver }) => {
     maxBoundary = 100;
   }, []);
 
-  return (
-    <View style={styles.screen}>
-      <Title>Device's Guess</Title>
+  const contentPotrait = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
 
       <Card>
@@ -78,7 +79,31 @@ const GameScreen = ({ userNumber, onGameOver }) => {
           </View>
         </View>
       </Card>
+    </>
+  );
 
+  const contentLandScape = (
+    <>
+      <View style={styles.buttonContainerWide}>
+        <View style={styles.buttonContainer}>
+          <PrimaryButton onPress={nextGuessHandler.bind(this, 'lower')}>
+            <Ionicons name='remove' size={24} color='white' />
+          </PrimaryButton>
+        </View>
+        <NumberContainer>{currentGuess}</NumberContainer>
+        <View style={styles.buttonContainer}>
+          <PrimaryButton onPress={nextGuessHandler.bind(this, 'greater')}>
+            <Ionicons name='add' size={24} color='white' />
+          </PrimaryButton>
+        </View>
+      </View>
+    </>
+  );
+
+  return (
+    <View style={styles.screen}>
+      <Title>Device's Guess</Title>
+      {width > 600 ? contentLandScape : contentPotrait}
       <View style={styles.listContainer}>
         <FlatList
           data={pastGuess}
@@ -107,6 +132,11 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     flex: 1,
+  },
+
+  buttonContainerWide: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   listContainer: {
