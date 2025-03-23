@@ -14,7 +14,7 @@ export default Subtitle;
 const styles = StyleSheet.create({
   subtitleContainer: {
     padding: 6,
-    marginHorizontal: 12,
+    marginHorizontal: 4,
     marginVertical: 4,
     borderBottomColor: '#E3D1D3FF',
     borderBottomWidth: 2,
