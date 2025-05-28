@@ -1,20 +1,33 @@
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import ManageExpenses from './screens/ManageExpenses';
+import RecentExpenses from './screens/RecentExpenses';
+import AllExpenses from './screens/AllExpenses';
 
-export default function App() {
+const myStack = createNativeStackNavigator();
+const myBottomTab = createBottomTabNavigator();
+
+function ExpensesOverView() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <myBottomTab.Navigator>
+      <myBottomTab.Screen name='RecentExpenses' component={RecentExpenses} />
+      <myBottomTab.Screen name='AllExpenses' component={AllExpenses} />
+    </myBottomTab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <>
+      <StatusBar style='auto' />
+      <NavigationContainer>
+        <myStack.Navigator>
+          <myStack.Screen name='ExpensesOverView' component={ExpensesOverView} />
+          <myStack.Screen name='ManageExpense' component={ManageExpenses} />
+        </myStack.Navigator>
+      </NavigationContainer>
+    </>
+  );
+}
