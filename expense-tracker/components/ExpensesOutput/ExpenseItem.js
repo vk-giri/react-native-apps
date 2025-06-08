@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+
 import { GlobalStyles } from '../../constants/styles';
 import { getFormattedDate } from '../../utils/date';
-import { useNavigation } from '@react-navigation/native';
 
 const ExpenseItem = ({ id, description, amount, date }) => {
   const navigation = useNavigation();
@@ -11,12 +11,14 @@ const ExpenseItem = ({ id, description, amount, date }) => {
     navigation.navigate('ManageExpense', { expenseId: id });
   }
 
+  const capitalizeFirstChar = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
   return (
     <>
       <Pressable style={({ pressed }) => pressed && styles.pressed} onPress={expensePressHandler}>
         <View style={styles.expenseItemContainer}>
           <View>
-            <Text style={[styles.textBase, styles.description]}>{description}</Text>
+            <Text style={[styles.textBase, styles.description]}>{capitalizeFirstChar(description)}</Text>
             <Text tyle={styles.textBase}>{getFormattedDate(date)}</Text>
           </View>
           <View style={styles.amountContainer}>
