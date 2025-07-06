@@ -3,17 +3,29 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import FormInput from './FormInput';
 import CustomButton from '../UI/CustomButton';
+import { getFormattedDate } from '../../utils/date';
 
-const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel }) => {
+const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel, initialData }) => {
   const [inputValue, setInputValue] = useState({
-    amount: '',
-    date: '',
-    description: '',
+    amount: initialData?.amount != null ? initialData.amount.toString() : '',
+    date: initialData?.date ? getFormattedDate(initialData.date) : '',
+    description: initialData?.description != null ? initialData.description.toString() : '',
+  });
+
+  const [isInputValid, setIsInputValid] = useState({
+    amount: true,
+    date: true,
+    description: true,
   });
 
   function inputChangeHandler(inputIdentifier, enteredValue) {
     setInputValue((prev) => {
       return { ...prev, [inputIdentifier]: enteredValue };
+    });
+
+    // if a value is entered, we are treating it as VALID, will do validation during submission
+    setIsInputValid((prev) => {
+      return { ...prev, [inputIdentifier]: true };
     });
   }
 
@@ -24,8 +36,24 @@ const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel }) =>
       description: inputValue.description,
     };
 
-    onSubmitHandler(expenseData)
+    const isAmountValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
+    const isDateValid = !isNaN(expenseData.date);
+    const isDescriptionValid = expenseData.description.trim().length > 0;
+
+    if (!isAmountValid || !isDateValid || !isDescriptionValid) {
+      setIsInputValid({
+        amount: isAmountValid,
+        date: isDateValid,
+        description: isDescriptionValid,
+      });
+
+      return;
+    }
+
+    onSubmitHandler(expenseData);
   }
+
+  const isFormInvalid = !isInputValid.amount || !isInputValid.date || !isInputValid.description;
 
   return (
     <View style={styles.form}>
@@ -60,6 +88,7 @@ const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel }) =>
           onChangeText: inputChangeHandler.bind(this, 'description'),
         }}
       />
+      {isFormInvalid && <Text>INvalid inputs values</Text>}
 
       <View style={styles.buttonsContainer}>
         <CustomButton mode='flat' onPress={onCancelHandler} style={styles.button}>

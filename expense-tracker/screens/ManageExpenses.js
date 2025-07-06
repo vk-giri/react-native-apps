@@ -13,6 +13,8 @@ const ManageExpenses = ({ route, navigation }) => {
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
 
+  const selectedExpense = expensesCtx.expenses.find((item) => item.id === editedExpenseId);
+
   // modifying the Navigation Params from inside the screen
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -38,7 +40,12 @@ const ManageExpenses = ({ route, navigation }) => {
 
   return (
     <View style={styles.rootContainer}>
-      <ExpenseForm onCancelHandler={cancelHandler} onSubmitHandler={confirmHandler} submitButtonLabel={isEditing ? 'Update' : 'Add'} />
+      <ExpenseForm
+        initialData={selectedExpense}
+        onCancelHandler={cancelHandler}
+        onSubmitHandler={confirmHandler}
+        submitButtonLabel={isEditing ? 'Update' : 'Add'}
+      />
 
       {isEditing && (
         <>
