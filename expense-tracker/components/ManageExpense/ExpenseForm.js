@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import FormInput from './FormInput';
 import CustomButton from '../UI/CustomButton';
 import { getFormattedDate } from '../../utils/date';
+import { GlobalStyles } from '../../constants/styles';
 
 const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel, initialData }) => {
   const [inputValue, setInputValue] = useState({
@@ -62,6 +63,7 @@ const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel, init
         <FormInput
           label='Amount'
           style={styles.rowInput}
+          isInvalid={!isInputValid.amount}
           textInputConfig={{
             keyboardType: 'decimal-pad',
             value: inputValue.amount,
@@ -71,6 +73,7 @@ const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel, init
         <FormInput
           label='Date'
           style={styles.rowInput}
+          isInvalid={!isInputValid.date}
           textInputConfig={{
             placeholder: 'YYYY-MM-DD',
             maxLength: 10,
@@ -81,6 +84,7 @@ const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel, init
       </View>
       <FormInput
         label='Description'
+        isInvalid={!isInputValid.description}
         textInputConfig={{
           multiline: true,
           autoCorrect: false,
@@ -88,7 +92,7 @@ const ExpenseForm = ({ onCancelHandler, onSubmitHandler, submitButtonLabel, init
           onChangeText: inputChangeHandler.bind(this, 'description'),
         }}
       />
-      {isFormInvalid && <Text>INvalid inputs values</Text>}
+      {isFormInvalid && <Text style={styles.errorText}>Invalid Input Values. Please check all the Inputs!!</Text>}
 
       <View style={styles.buttonsContainer}>
         <CustomButton mode='flat' onPress={onCancelHandler} style={styles.button}>
@@ -135,5 +139,11 @@ const styles = StyleSheet.create({
   button: {
     minWidth: 120,
     marginHorizontal: 8,
+  },
+
+  errorText: {
+    textAlign: 'center',
+    color: GlobalStyles.colors.error500,
+    margin: 8,
   },
 });
