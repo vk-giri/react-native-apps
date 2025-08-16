@@ -1,12 +1,17 @@
 import { StyleSheet } from 'react-native';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { ExpensesContext } from '../store/expenses-context';
 import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
 import { getDateMinusDays } from '../utils/date';
 import { fetchExpenses } from '../utils/http';
+import LoadingOvelay from '../components/UI/LoadingOvelay';
+import ErrorOverlay from '../components/UI/ErrorOverlay';
 
 const RecentExpenses = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const expensesCtx = useContext(ExpensesContext);
 
   const recentExpense = expensesCtx.expenses.filter((expense) => {
@@ -18,12 +23,28 @@ const RecentExpenses = () => {
 
   useEffect(() => {
     async function getExpenses() {
-      const expenses = await fetchExpenses();
-      expensesCtx.setExpenses(expenses);
+      setLoading(true);
+
+      try {
+        const expenses = await fetchExpenses();
+        expensesCtx.setExpenses(expenses);
+      } catch (error) {
+        setError('Could not fetch expenses');
+      }
+
+      setLoading(false);
     }
 
     getExpenses();
   }, []);
+
+  if (error && !loading) {
+    return <ErrorOverlay message={error} />;
+  }
+
+  if (loading) {
+    return <LoadingOvelay />;
+  }
 
   return (
     <>
