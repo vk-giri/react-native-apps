@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Config from 'react-native-config';
 
-const DATABASE_URL = Config.DATABASE_URL;
+const DATABASE_URL = 'https://social-login-okta-415004-default-rtdb.asia-southeast1.firebasedatabase.app';
 
 export async function storeExpense(expenseData) {
   try {

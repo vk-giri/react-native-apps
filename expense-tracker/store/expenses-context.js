@@ -21,6 +21,7 @@ function expensesReducer(state, action) {
       return state.map((expense) => (expense.id === action.payload.id ? { ...expense, ...action.payload.data } : expense));
 
     case 'SET':
+      // in our app we have the latest added 
       return action.payload;
 
     default:
