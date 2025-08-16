@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text } from 'react-native';
+import { FlatList } from 'react-native';
 import ExpenseItem from './ExpenseItem';
 
 function renderExpenseItem(itemData) {
@@ -10,5 +10,3 @@ const ExpensesList = ({ expenses }) => {
 };
 
 export default ExpensesList;
-
-const styles = StyleSheet.create({});

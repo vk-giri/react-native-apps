@@ -4,14 +4,17 @@ import { StyleSheet, View } from 'react-native';
 import { ExpensesContext } from '../store/expenses-context';
 
 import IconButton from '../components/UI/IconButton';
-import CustomButton from '../components/UI/CustomButton';
+import ExpenseForm from '../components/ManageExpense/ExpenseForm';
 import { GlobalStyles } from '../constants/styles';
+import { deleteExpense, storeExpense, updateExpense } from '../utils/http';
 
 const ManageExpenses = ({ route, navigation }) => {
   const expensesCtx = useContext(ExpensesContext);
 
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
+
+  const selectedExpense = expensesCtx.expenses.find((item) => item.id === editedExpenseId);
 
   // modifying the Navigation Params from inside the screen
   useLayoutEffect(() => {
@@ -20,8 +23,10 @@ const ManageExpenses = ({ route, navigation }) => {
     });
   }, [navigation, isEditing]);
 
-  function deleteExpenseHandler() {
+  async function deleteExpenseHandler() {
     expensesCtx.deleteExpense(editedExpenseId);
+    await deleteExpense(editedExpenseId);
+
     navigation.goBack();
   }
 
@@ -29,23 +34,26 @@ const ManageExpenses = ({ route, navigation }) => {
     navigation.goBack();
   }
 
-  function confirmHandler() {
-    if (isEditing) expensesCtx.updateExpense(editedExpenseId, { description: 'test!!!!!', amount: 23, date: new Date() });
-    else expensesCtx.addExpense({ description: 'test', amount: 20, date: new Date() });
+  async function confirmHandler(expenseData) {
+    if (isEditing) {
+      expensesCtx.updateExpense(editedExpenseId, expenseData);
+      await updateExpense(editedExpenseId, expenseData);
+    } else {
+      const id = await storeExpense(expenseData);
+      expensesCtx.addExpense({ ...expenseData, id });
+    }
 
     navigation.goBack();
   }
 
   return (
     <View style={styles.rootContainer}>
-      <View style={styles.buttonsContainer}>
-        <CustomButton mode='flat' onPress={cancelHandler} style={styles.button}>
-          Cancel
-        </CustomButton>
-        <CustomButton onPress={confirmHandler} style={styles.button}>
-          {isEditing ? 'Update' : 'Add'}
-        </CustomButton>
-      </View>
+      <ExpenseForm
+        initialData={selectedExpense}
+        onCancelHandler={cancelHandler}
+        onSubmitHandler={confirmHandler}
+        submitButtonLabel={isEditing ? 'Update' : 'Add'}
+      />
 
       {isEditing && (
         <>
@@ -65,17 +73,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     backgroundColor: GlobalStyles.colors.primary800,
-  },
-
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  button: {
-    minWidth: 120,
-    marginHorizontal: 8,
   },
 
   deleteContainer: {
