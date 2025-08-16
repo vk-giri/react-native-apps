@@ -1,23 +1,33 @@
 import { StyleSheet } from 'react-native';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { ExpensesContext } from '../store/expenses-context';
 import ExpensesOutput from '../components/ExpensesOutput/ExpensesOutput';
 import { getDateMinusDays } from '../utils/date';
+import { fetchExpenses } from '../utils/http';
 
 const RecentExpenses = () => {
   const expensesCtx = useContext(ExpensesContext);
 
-  const recentExpense = expensesCtx.expenses.filter(expense => {
+  const recentExpense = expensesCtx.expenses.filter((expense) => {
     const today = new Date();
     const date7daysAgo = getDateMinusDays(today, 7);
 
     return expense.date >= date7daysAgo;
-  })
+  });
+
+  useEffect(() => {
+    async function getExpenses() {
+      const expenses = await fetchExpenses();
+      expensesCtx.setExpenses(expenses);
+    }
+
+    getExpenses();
+  }, []);
 
   return (
     <>
-      <ExpensesOutput expenses={recentExpense} expensesPeriod={'Last 7 days'} fallbackText={"No Expenses In The Last 7 Days"} />
+      <ExpensesOutput expenses={recentExpense} expensesPeriod={'Last 7 days'} fallbackText={'No Expenses In The Last 7 Days'} />
     </>
   );
 };
