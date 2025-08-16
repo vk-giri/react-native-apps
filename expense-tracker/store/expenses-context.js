@@ -11,8 +11,7 @@ export const ExpensesContext = createContext({
 function expensesReducer(state, action) {
   switch (action.type) {
     case 'ADD':
-      const id = new Date().toString() + Math.random().toString();
-      return [{ ...action.payload, id }, ...state];
+      return [action.payload, ...state];
 
     case 'DELETE':
       return state.filter((expense) => expense.id !== action.payload);
@@ -21,8 +20,10 @@ function expensesReducer(state, action) {
       return state.map((expense) => (expense.id === action.payload.id ? { ...expense, ...action.payload.data } : expense));
 
     case 'SET':
-      // in our app we have the latest added 
-      return action.payload;
+      // in our app we have the latest added expense on top, but if we fetch the value from DB it is at the last
+      // since in firebase entries are chronologically ordered. Hence we will reverse the order we get from DB
+      const reversedData = action.payload.reverse();
+      return reversedData;
 
     default:
       return state;

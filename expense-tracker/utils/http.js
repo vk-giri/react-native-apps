@@ -1,13 +1,14 @@
 import axios from 'axios';
-import Config from 'react-native-config';
 
 const DATABASE_URL = 'https://social-login-okta-415004-default-rtdb.asia-southeast1.firebasedatabase.app';
 
 export async function storeExpense(expenseData) {
   try {
-    await axios.post(`${DATABASE_URL}/expenses.json`, expenseData);
+    const response = await axios.post(`${DATABASE_URL}/expenses.json`, expenseData);
 
     console.log('Data saved in DB successfully!');
+
+    return response.data.name;
   } catch (error) {
     console.log('Error in saving data', error);
     throw error;
