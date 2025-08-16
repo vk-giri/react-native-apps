@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
@@ -53,9 +52,7 @@ const App = () => {
       <StatusBar style='light' />
       <Navigation />
     </>
-  )
-}
+  );
+};
 
-export default App
-
-const styles = StyleSheet.create({})
+export default App;
