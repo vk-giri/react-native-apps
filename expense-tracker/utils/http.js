@@ -31,7 +31,33 @@ export async function fetchExpenses() {
 
     return expenses;
   } catch (error) {
-    console.log('Error in fetching data!', error);
+    console.log('Error in fetching data', error);
+    throw error;
+  }
+}
+
+export async function updateExpense(id, expenseData) {
+  try {
+    const response = await axios.put(`${DATABASE_URL}/expenses/${id}.json`, expenseData);
+
+    console.log('Data updated successfully!');
+
+    return response;
+  } catch (error) {
+    console.log('Error in updating data', error);
+    throw error;
+  }
+}
+
+export async function deleteExpense(id) {
+  try {
+    const response = await axios.delete(`${DATABASE_URL}/expenses/${id}.json`);
+
+    console.log('Data deleted successfully!');
+
+    return response;
+  } catch (error) {
+    console.log('Error in deleting data', error);
     throw error;
   }
 }
